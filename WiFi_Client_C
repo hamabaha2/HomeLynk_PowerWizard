@@ -1,32 +1,36 @@
+// Comments with ** require work
+
 #include <WiFi.h>
 
-const char* ssid     = "SSID_here";
-const char* password = "password_here";
+char* home_ssid     = "SSID_here";
+char* home_password = "password_here";
 
 void setup()
 {
-    Serial.begin(115200);
-    delay(10);
+    // Connecting to a WiFi network
 
-    // We start by connecting to a WiFi network
-
-    Serial.println();
-    Serial.println();
-    Serial.print("Connecting to ");
-    Serial.println(ssid);
-
-    WiFi.begin(ssid, password);
+    // indicators for attempting to connecting to Wifi here **
+    
+    // Begin connecting 
+    
+    WiFi.begin(home_ssid, home_password);
 
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
-        Serial.print(".");
+        
+        // Create exit loop for wifi timeout here**
     }
-
-    Serial.println("");
-    Serial.println("WiFi connected");
-    Serial.println("IP address: ");
-    Serial.println(WiFi.localIP());
+    
+    if (WiFi.status() != WL_CONNECTED) {
+    
+    // Indicate WiFi connection failed and end this routine **
+    
+    }
+    
+    
+    
 }
+ // below are examples on how to connect to a server
 
  // Use WiFiClient class to create TCP connections
     WiFiClient client;
