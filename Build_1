@@ -1,0 +1,51 @@
+# include <WiFi.h>
+
+
+// Global constants
+
+const int led1_pin = 48;
+const int btn_pin = 1;
+
+char ssid[] = "MOTOEDA2";
+char passwd[] = "ka24yxsr4f";
+
+void setup() {
+  // setup serial and pins modes
+  
+  Serial.begin(115200);
+  pinMode(led1_pin, OUTPUT);
+  pinMode(btn_pin, INPUT);
+
+  // Feedback
+  Serial.println("Pins modes ... set!");
+
+  // connect to wifi
+  WiFi.begin(ssid,passwd);
+  Serial.print("Connecting to wifi ");
+
+
+  // indicate connection status
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.print(".");
+    digitalWrite(led1_pin, HIGH);
+    delay(100);
+    digitalWrite(led1_pin, LOW);
+    delay(400);
+  }
+
+  Serial.println(" ");
+  Serial.println("Wifi Connected! ");
+  digitalWrite(led1_pin, HIGH);
+  
+}
+
+void loop() {
+  int btn_sts = 0;
+  while (digitalRead(btn_pin)== LOW) {
+    delay(250);    
+  }
+  Serial.println("Button pressed!");
+  digitalWrite(led1_pin, LOW);
+  delay(1000);
+  digitalWrite(led1_pin, HIGH);
+}
