@@ -2,8 +2,8 @@
 
 #include <WiFi.h>
 
-char* home_ssid     = "SSID_here";
-char* home_password = "password_here";
+char home_ssid[]     = "SSID_here";
+char home_password[] = "password_here";
 
 void setup()
 {
