@@ -6,9 +6,9 @@
 // Declarations
 
 // Declarations - Wifi Parameters
-char home_ssid[];                                           // Internet WIFI SSID
-char home_password[];                                       // Internet WIFI password
-Const led_wifi = <assign led wifi here>;                    // assign wifi indicator led
+char home_ssid[]="MOTOEDA2";                                // Internet WIFI SSID
+char home_password[]="ka24yxsr4f";                          // Internet WIFI password
+const int led_wifi = 48;                                        // assign wifi indicator led
 int wifi_status = 0;                                        // 0 for not connected and 1 for connected
 
 void setup()
@@ -22,11 +22,12 @@ void setup()
   WiFi.persistent(true);                                    // persistent mode
   Serial.println("");
   Serial.print("Connecting to wireless");
-  X = 0;                                                    // counter for 5 seconds to connect
-  while ((WiFi.status()!=WL_CONNECTED") && (X<6)) {         // Wait 5 seconds for wireless connection
+  int X = 0;                                                    // counter for 5 seconds to connect
+  while (WiFi.status() != WL_CONNECTED) {         // Wait 5 seconds for wireless connection
     Serial.print(".");
     X ++;
     delay(999);
+    if (X=5) { break; }
   }
 }
 
@@ -47,7 +48,7 @@ void wclient_mgr ()
   // This function connects to WIFI if disconnected
   // Will do nothing if already connected
   // Will 
-  if (WiFi.status()!="WL_CONNECTED") {
+  if (WiFi.status()!=WL_CONNECTED) {
     
     Serial.println("Wireless client not connected");
     digitalWrite(led_wifi, LOW);
@@ -62,8 +63,9 @@ void wclient_mgr ()
   } else {
     
     Serial.println("Wireless connected");
-    Serial.println(WiFi.LocalIP());
+    Serial.println(WiFi.localIP());
     digitalWrite(led_wifi, HIGH);
     wifi_status = 1;
     return;
+  }
 }
