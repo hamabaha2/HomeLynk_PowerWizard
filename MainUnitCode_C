@@ -1,1 +1,69 @@
+// Libraries
 
+#include <WiFi.h> // Wifi and TCP library
+
+
+// Declarations
+
+// Declarations - Wifi Parameters
+char home_ssid[];                                           // Internet WIFI SSID
+char home_password[];                                       // Internet WIFI password
+Const led_wifi = <assign led wifi here>;                    // assign wifi indicator led
+int wifi_status = 0;                                        // 0 for not connected and 1 for connected
+
+void setup()
+{
+  // Setup Serial Monitor
+  Serial.begin(115200);
+ 
+  // Start Wifi client
+  WiFi.begin( home_ssid , home_password );                  // connect
+  WiFi.setAutoReconnect(true);                              // reconnect when disconnected
+  WiFi.persistent(true);                                    // persistent mode
+  Serial.println("");
+  Serial.print("Connecting to wireless");
+  X = 0;                                                    // counter for 5 seconds to connect
+  while ((WiFi.status()!=WL_CONNECTED") && (X<6)) {         // Wait 5 seconds for wireless connection
+    Serial.print(".");
+    X ++;
+    delay(999);
+  }
+}
+
+
+
+
+void loop()
+{
+  // Manage wifi client
+  wclient_mgr ();
+  
+  
+}
+
+
+void wclient_mgr ()
+{
+  // This function connects to WIFI if disconnected
+  // Will do nothing if already connected
+  // Will 
+  if (WiFi.status()!="WL_CONNECTED") {
+    
+    Serial.println("Wireless client not connected");
+    digitalWrite(led_wifi, LOW);
+    wifi_status = 0;
+    WiFi.disconnect();
+    WiFi.begin(home_ssid, home_password);
+    
+  } else if (wifi_status = 1) { 
+    
+    return;
+    
+  } else {
+    
+    Serial.println("Wireless connected");
+    Serial.println(WiFi.LocalIP());
+    digitalWrite(led_wifi, HIGH);
+    wifi_status = 1;
+    return;
+}
