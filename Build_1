@@ -47,7 +47,7 @@ void setup() {
   Serial.print("Connecting to wifi ");
 
   // set Wifi server
-  WiFiServer server(80);
+  //WiFiServer server(80);
 
 
   
@@ -65,9 +65,10 @@ void setup() {
   delay(2000);
   Serial.print("IP Address: ");
   Serial.println(WiFi.localIP());
-  //begin server
-  server.begin();
   
+  //begin server
+  server.begin(80);
+  Serial.println("Server begin");
 }
 
 void loop() {
@@ -75,9 +76,12 @@ void loop() {
   // react when button pressed
   if (digitalRead(btn_pin)==HIGH) { 
     Serial.println("Button was pressed!");
+    digitalWrite(output45, HIGH);
+    digitalWrite(output48, HIGH);
+    delay(200);
     digitalWrite(output45, LOW);
     digitalWrite(output48, LOW);
-    delay(500);
+    delay(300);
     if (output45State!="off") {
       digitalWrite(output45, HIGH);
     }
@@ -153,7 +157,7 @@ void loop() {
               client.println("<p><a href=\"/45/off\"><button class=\"button button2\">OFF</button></a></p>");
             }
             
-            // Display current state, and ON/OFF buttons for GPIO 27
+            // Display current state, and ON/OFF buttons for GPIO 48
             client.println("<p>GPIO 48 - State " + output48State + "</p>");
             // If the output48State is off, it displays the ON button
             if (output48State == "off") {
