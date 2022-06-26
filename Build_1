@@ -166,6 +166,24 @@ void loop() {
               client.println("<p><a href=\"/48/off\"><button class=\"button button2\">OFF</button></a></p>");
             }
 
+            // Adding a form and a submit ******
+
+            
+            client.println("<form class=\"\" action=\"index.html\" method=\"post\">");
+            client.println("<label for=\"\">Enter Command:</label>");
+            client.println("<input type=\"text\" name=\"cmd\" value=\"/26/on\">");
+            client.println("<input type=\"submit\" name=\"cmd\">");
+            client.println("</form>");
+
+
+
+            // end of form and submit *******
+
+
+
+
+
+            
             client.println("</body></html>");
 
             //The HTTP response ends with another blank line
