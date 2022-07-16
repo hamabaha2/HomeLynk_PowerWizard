@@ -17,11 +17,20 @@
 typedef struct struct_message {
     char acct[50];
     char dvcGroup[50];
-    char macAddr[18];    
+    char macAddr[18]; 
+    char myMAC[18];
+    int Threshold;
+    bool Relay_1;
+    bool Relay_2;
 } struct_message;
 
 // Create a struct_message called myData = > broadcast
 struct_message broadcast;
+
+// Global variables
+int led1Status;
+int led2Status;
+long timer;
 
 // callback function that will be executed when data is received
 void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
@@ -35,9 +44,28 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
   Serial.print("Main Device MAC Address: ");
   Serial.println(broadcast.macAddr);
   Serial.println();
+  Serial.print("Addressed Device MAC Address: ");
+  Serial.println(broadcast.myMAC);
+  Serial.print("Threshold value: ");
+  Serial.println(broadcast.Threshold);
+  Serial.print("Relay 1 Command");
+  Serial.println(broadcast.Relay_1);
+  Serial.print("Relay 2 Command");
+  Serial.println(broadcast.Relay_2);
+  //digitalWrite(45,Relay_1);
+  //digitalWrite(48,Relay_2);
 }
  
-void setup() {
+void setup() {  
+  // Setup pins and relays
+  pinMode(45,OUTPUT);
+  pinMode(48,OUTPUT);
+  pinMode(1,INPUT);
+
+  // Reset everything
+  digitalWrite(45, LOW);
+  digitalWrite(48, LOW);
+  
   // Initialize Serial Monitor
   Serial.begin(115200);
   
@@ -53,8 +81,16 @@ void setup() {
   // Once ESPNow is successfully Init, we will register for recv CB to
   // get recv packer info
   esp_now_register_recv_cb(OnDataRecv);
+
+  timer = millis();
 }
  
 void loop() {
-  
+  led1Status = broadcast.Relay_1;
+  led2Status = broadcast.Relay_2;
+  if ((millis()-timer)>500) {
+    timer = millis();
+    digitalWrite(45,led1Status);
+    digitalWrite(48,led2Status);
+  }
 }
