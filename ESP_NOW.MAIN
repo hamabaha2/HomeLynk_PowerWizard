@@ -24,10 +24,20 @@ typedef struct struct_message {
   char acct[50];
   char dvcGroup[50];
   char macAddr[18];
+  char yourMAC[18];
+  int Threshold;
+  bool Relay_1;
+  bool Relay_2;
 } struct_message;
 
 // Create a struct_message called myData => broadcast
 struct_message broadcast;
+
+bool led1Status;
+bool led2Status;
+bool btnStatus;
+long timer;
+int i;
 
 esp_now_peer_info_t peerInfo;
 
@@ -46,6 +56,14 @@ void setup() {
   //myMAC1 = WiFi.macAddress()
   //myMAC = myMAC1.c_str();
   Serial.println("MAC Address: "+WiFi.macAddress());
+
+  // Setup the pins
+  pinMode (45, OUTPUT);
+  pinMode (48, OUTPUT);
+  pinMode (1, INPUT);
+
+  // setup timer
+  timer = millis();
   
   // Init ESP-NOW
   if (esp_now_init() != ESP_OK) {
@@ -73,17 +91,43 @@ void loop() {
   // Set values to send
   strcpy(broadcast.acct, "hamabaha2@yahoo.com");
   strcpy(broadcast.dvcGroup, "home");
-  strcpy(broadcast.macAddr, "ff:ff:ff:ff:ff:ff");
+  strcpy(broadcast.macAddr, "7C:df:A1:E8:7B:B0");
+  broadcast.Threshold = 100;
+  broadcast.Relay_1 = led1Status;
+  broadcast.Relay_2 = led2Status;
   
   
-  // Send message via ESP-NOW
-  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &broadcast, sizeof(broadcast));
+  if (millis()-timer>2000) {
+    // reset time
+    timer = millis();
+    Serial.print("i: ");
+    Serial.println(i);
+    Serial.print("LED 1 Status: ");
+    Serial.println(led1Status);
+    Serial.print("LED 2 Status: ");
+    Serial.println(led2Status);
+    Serial.print("Button Status: ");
+    Serial.println(btnStatus);
+    
+    // Send message via ESP-NOW
+    esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &broadcast, sizeof(broadcast));
    
-  if (result == ESP_OK) {
-    Serial.println("Sent with success");
+    if (result == ESP_OK) {
+      Serial.println("Sent with success");
+    }
+    else {
+      Serial.println("Error sending the data");
+    }
   }
-  else {
-    Serial.println("Error sending the data");
+  btnStatus = digitalRead(1);
+  if (btnStatus == HIGH) {
+    i++;                  // increase i which is a counter
+    if (i>3) {i=0;}       // make sure i is between 0 and 3
+    led1Status = i%2;     // led1 will light when i is odd
+    if (i>1) {led2Status = 1;} else {led2Status = 0;} // led2 will light when i is 2 or 3
+    while (digitalRead(1)==HIGH) {delay(10);} // do not read button until it is released
+    digitalWrite(45,led1Status);
+    digitalWrite(48,led2Status);
   }
-  delay(2000);
+
 }
