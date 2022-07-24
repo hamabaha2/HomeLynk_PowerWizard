@@ -1,71 +1,45 @@
-// Libraries
 
-#include <WiFi.h> // Wifi and TCP library
-
-
-// Declarations
-
-// Declarations - Wifi Parameters
-char home_ssid[]="MOTOEDA2";                                // Internet WIFI SSID
-char home_password[]="ka24yxsr4f";                          // Internet WIFI password
-const int led_wifi = 48;                                        // assign wifi indicator led
-int wifi_status = 0;                                        // 0 for not connected and 1 for connected
-
-void setup()
-{
-  // Setup Serial Monitor
-  Serial.begin(115200);
+/* +-------------------------------------+
+   |               Libraries             |
+   +-------------------------------------+ */
+ #include <WiFi.h>
+ #include <preferences.h>
+ #include <esp_now.h>
  
-  // Start Wifi client
-  WiFi.begin( home_ssid , home_password );                  // connect
-  WiFi.setAutoReconnect(true);                              // reconnect when disconnected
-  WiFi.persistent(true);                                    // persistent mode
-  Serial.println("");
-  Serial.print("Connecting to wireless");
-  int X = 0;                                                    // counter for 5 seconds to connect
-  while (WiFi.status() != WL_CONNECTED) {         // Wait 5 seconds for wireless connection
-    Serial.print(".");
-    X ++;
-    delay(999);
-    if (X=5) { break; }
-  }
+/* +-------------------------------------+
+   |        Structure Templates          |
+   +-------------------------------------+*/
+
+
+/* +-------------------------------------+
+   |          Global Variables           |
+   +-------------------------------------+*/
+
+
+/* +-------------------------------------+
+   |         Global Structures           |
+   +-------------------------------------+*/
+
+
+/* +-------------------------------------+
+   |       Function Declarations         |
+   +-------------------------------------+ */
+   
+
+
+
+/* +-------------------------------------+
+   |                Setup                |
+   +-------------------------------------+ */
+void setup() {
+	//
+	
+	
 }
 
-
-
-
-void loop()
-{
-  // Manage wifi client
-  wclient_mgr ();
-  
-  
-}
-
-
-void wclient_mgr ()
-{
-  // This function connects to WIFI if disconnected
-  // Will do nothing if already connected
-  // Will 
-  if (WiFi.status()!=WL_CONNECTED) {
-    
-    Serial.println("Wireless client not connected");
-    digitalWrite(led_wifi, LOW);
-    wifi_status = 0;
-    WiFi.disconnect();
-    WiFi.begin(home_ssid, home_password);
-    
-  } else if (wifi_status = 1) { 
-    
-    return;
-    
-  } else {
-    
-    Serial.println("Wireless connected");
-    Serial.println(WiFi.localIP());
-    digitalWrite(led_wifi, HIGH);
-    wifi_status = 1;
-    return;
-  }
+/* +-------------------------------------+
+   |                 Loop                |
+   +-------------------------------------+*/
+void loop() {
+	//
 }
