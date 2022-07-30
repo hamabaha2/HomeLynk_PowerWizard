@@ -1,5 +1,18 @@
-# HomeLynk_PowerWizard
-Power Wizard Main unit Codes
+File MainUnitCode_C
+
+Pin configuration
 
 
-Now I'm trying to test forks
+                        +---------+
+pin 36 (red act led)   -|         |-
+pin 37 (grn act led)   -|         |-
+pin 38 (blu act led)   -|         |-
+pin 39 (K act led)     -|         |-
+                       -|         |-
+                       -|         |-
+                       -|         |-
+                       -|         |-
+                       -|         |-
+                       -|         |-
+                        +---------+
+               
