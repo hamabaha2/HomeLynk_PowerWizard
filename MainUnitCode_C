@@ -5,7 +5,7 @@
  #include <WiFi.h>
  #include <Preferences.h>
  #include <esp_now.h>
- 
+
 /* +-------------------------------------+
    |        Structure Templates          |
    +-------------------------------------+*/
@@ -16,7 +16,7 @@
    +-------------------------------------+*/
 
 const setup_btn = 1; 			// This is the pin that has the setup button
-unsigned int setup_btn_timer; 	// How many millis the button is pressed
+unsigned int setup_btn_timer; 	// How many millis the button is pressed dfg
 
 /* +-------------------------------------+
    |         Global Structures           |
@@ -30,9 +30,9 @@ unsigned int setup_btn_timer; 	// How many millis the button is pressed
 // Setup Function
 void setup_mode() {
 	// setup mode configuration here
-	
+
 	// exit setup mode using button
-	
+
 }
 void setup_mode() {
   while (digitalRead(setup_btn)==HIGH) {
@@ -62,7 +62,7 @@ void setup() {
 void loop() {
 	// setup button check
 	setup_btn_timer = millis();
-	while (digitalRead(setup_btn)==HIGH) {		
+	while (digitalRead(setup_btn)==HIGH) {
     if ((millis() - setup_btn_timer) > 5000) {  // pressed for 5 seconds
       setup_btn_timer = millis(); 				// reset setup button timer
       setup_mode();  							// enter setup mode
