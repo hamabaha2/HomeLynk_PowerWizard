@@ -1,3 +1,5 @@
+Below is the information on the pin configuration and files
+
 File MainUnitCode_C
 
 Pin configuration
