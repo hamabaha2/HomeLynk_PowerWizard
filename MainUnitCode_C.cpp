@@ -15,7 +15,7 @@
    |          Global Variables           |
    +-------------------------------------+*/
 
-<<<<<<< HEAD
+
 const int setup_btn = 1; 			// This is the pin that has the setup button
 
 const int act_ledr = 36;          // pins for act LED, red green, blue, and power
@@ -37,10 +37,8 @@ const int wfi_ledb_pwmc = 6;
 const int wfi_ledk_pwmc = 7;
 
 unsigned int setup_btn_timer; 	// How many millis the button is pressed
-=======
 const setup_btn = 1; 			// This is the pin that has the setup button
 unsigned int setup_btn_timer; 	// How many millis the button is pressed dfg
->>>>>>> 912481bb7a264d04aed28b389a83647a610aa9df
 
 // Wifi variables
 const char ssid[] = "ssid";
@@ -57,7 +55,6 @@ const char password[] = "wifi_password";
 
 // Setup Function
 void setup_mode() {
-<<<<<<< HEAD
    // define local variables
    unsigned long int setup_timer;
    unsigned long int currentTime;
@@ -149,7 +146,6 @@ void setup_mode() {
          }
       }
    }
-=======
 	// setup mode configuration here
 
 	// exit setup mode using button
@@ -159,7 +155,6 @@ void setup_mode() {
   while (digitalRead(setup_btn)==HIGH) {
     // feedback on setup led while button is pressed
     Serial.println("Waiting for button release to start setup mode");
->>>>>>> 912481bb7a264d04aed28b389a83647a610aa9df
   }
   // *************** storing settings ***************
   if (submitted) {
