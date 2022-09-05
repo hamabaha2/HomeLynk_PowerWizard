@@ -30,7 +30,7 @@ typedef struct struct_message {
   bool Relay_2;
 } struct_message;
 
-// Create a struct_message called myData => broadcast
+// Create a struct_message called broadcast (I think this is wrong, needs stuct in the beginning)
 struct_message broadcast;
 
 bool led1Status;

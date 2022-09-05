@@ -9,7 +9,21 @@
 /* +-------------------------------------+
    |        Structure Templates          |
    +-------------------------------------+*/
+typedef struct masterMsg {
+   // masterMsg will include messages to switches
+   char acct[50];
+   char dvcGroup[50];
+   char macAddr[18];
+   char yourMAC[18];
+   int threshold;
+   bool Relay_1;
+   bool Relay_2;
+} masterMsg;
 
+typedef struct switchMsg {
+   // this will include messages from the switches (not ready yet)
+   int test;
+} switchMsg;
 
 /* +-------------------------------------+
    |          Global Variables           |
@@ -37,16 +51,34 @@ const int wfi_ledb_pwmc = 6;
 const int wfi_ledk_pwmc = 7;
 
 unsigned int setup_btn_timer; 	// How many millis the button is pressed
-const setup_btn = 1; 			// This is the pin that has the setup button
-unsigned int setup_btn_timer; 	// How many millis the button is pressed dfg
+
+
 
 // Wifi variables
 const char ssid[] = "ssid";
 const char password[] = "wifi_password";
 
+// ESP_NOW variable
+uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+
+
 /* +-------------------------------------+
    |         Global Structures           |
    +-------------------------------------+*/
+
+// Global structures are defined here
+
+struct masterMsg broadcastMsg; // Create a structure called broadcast
+struct masterMsg historyMasterMsg; // Create a structure for last broadcast message
+
+switchMsg switch1; // Create a structure for each switch
+switchMsg switch2;
+switchMsg switch3;
+switchMsg switch4;
+switchMsg switch5;
+switchMsg switch6;
+switchMsg switch7;
+switchMsg switch8;
 
 
 /* +-------------------------------------+
@@ -56,10 +88,10 @@ const char password[] = "wifi_password";
 // Setup Function
 void setup_mode() {
    // define local variables
-   unsigned long int setup_timer;
-   unsigned long int currentTime;
-   unsigned long int previousTime;
-   bool submitted = 0;
+   unsigned long int setup_timer; 
+   unsigned long int currentTime; 
+   unsigned long int previousTime; 
+   bool submitted = 0; 
 
    while (digitalRead(setup_btn)==HIGH) {
       // feedback on setup led while button is pressed
@@ -150,17 +182,8 @@ void setup_mode() {
 
 	// exit setup mode using button
 
-}
-void setup_mode() {
-  while (digitalRead(setup_btn)==HIGH) {
-    // feedback on setup led while button is pressed
-    Serial.println("Waiting for button release to start setup mode");
-  }
-  // *************** storing settings ***************
-  if (submitted) {
-   // store settings here
-  }
-}
+   }
+   }
 
 //Factory Reset Function
 void factory_reset(){
