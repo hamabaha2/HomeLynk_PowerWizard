@@ -11,13 +11,13 @@
    +-------------------------------------+*/
 typedef struct masterMsg {
    // masterMsg will include messages to switches
-   char acct[50];
-   char dvcGroup[50];
-   char macAddr[18];
-   char yourMAC[18];
-   int threshold;
-   bool Relay_1;
-   bool Relay_2;
+   char acct[50]; 	// account identifier
+   char dvcGroup[50];	// device group identifier
+   char macAddr[18];	// MAC address of main unit
+   char yourMAC[18];	// MAC address of the swtich (software level decision on message)
+   int threshold;	// Ampere threshold to cutoff
+   bool Relay_1;	// Relay command (On/Off)
+   bool Relay_2;	// Command for switches with two relays (On/Off)
 } masterMsg;
 
 typedef struct switchMsg {
@@ -104,9 +104,6 @@ void setup_mode() {
    setup_btn_timer = millis();	// reset the button timer (not sure if this works)
    // return 0;
 
-   // wifi settings
-
-
    // ****** webserver settings ********
 
    // Start server
@@ -178,21 +175,22 @@ void setup_mode() {
          }
       }
    }
-	// setup mode configuration here
-
-	// exit setup mode using button
+	// Peering mode configuration here
+	// exit setup mode using button or time expiry
+	// the main unit ESPNOW's on standard SSID, will listen to returning MAC addresses
+	// Newly learned MAC addresses will be added to list
+	// lights indicate peering success and failure (If 8 is already there)
 
    }
    }
 
 //Factory Reset Function
-void factory_reset(){
+void factory_reset() {
    // led feedback
    // allow button release
    // save original parameters
    // reboot
 }
-
 
 /* +-------------------------------------+
    |                Setup                |
