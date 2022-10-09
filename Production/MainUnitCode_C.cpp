@@ -196,36 +196,51 @@ void factory_reset() {
    |                Setup                |
    +-------------------------------------+ */
 void setup() {
+	// Init Serial Monitor
+	
+  	  Serial.begin(115200);
+ 
+  	// Set device as a Wi-Fi Station
+	
+  	  WiFi.mode(WIFI_STA);
+	
+	// Initialize ESP NOW
+	
+	  if (esp_now_init() != ESP_OK) {
+	    Serial.println("Error initializing ESP-NOW");
+	    return;
+	  }
 	// setup pins
-   pinMode( setup_btn, INPUT );
-   pinMode( act_ledr , OUTPUT );
-   pinMode( act_ledg , OUTPUT );
-   pinMode( act_ledb , OUTPUT );
-   pinMode( act_ledk , OUTPUT );
-   
-   pinMode( wfi_ledr , OUTPUT );
-   pinMode( wfi_ledg , OUTPUT );
-   pinMode( wfi_ledb , OUTPUT );
-   pinMode( wfi_ledk , OUTPUT );
+	   pinMode( setup_btn, INPUT );
+	   pinMode( act_ledr , OUTPUT );
+	   pinMode( act_ledg , OUTPUT );
+	   pinMode( act_ledb , OUTPUT );
+	   pinMode( act_ledk , OUTPUT );
 
-   // configure PWM for LEDs
-   ledcSetup(0, 50, 8);
-   ledcSetup(1, 50, 8);
-   ledcSetup(2, 50, 8);
-   ledcSetup(3, 5000, 8);
-   ledcSetup(4, 5000, 8);
-   ledcSetup(5, 5000, 8);
-   ledcSetup(6, 5000, 8);
+	   pinMode( wfi_ledr , OUTPUT );
+	   pinMode( wfi_ledg , OUTPUT );
+	   pinMode( wfi_ledb , OUTPUT );
+	   pinMode( wfi_ledk , OUTPUT );
 
-   ledcAttachPin( act_ledr , act_ledr_pwmc );
-   ledcAttachPin( act_ledg , act_ledg_pwmc );
-   ledcAttachPin( act_ledb , act_ledb_pwmc );
-   ledcAttachPin( act_ledk , act_ledk_pwmc );
+	// configure PWM for LEDs
+	
+	   ledcSetup(0, 50, 8);
+	   ledcSetup(1, 50, 8);
+	   ledcSetup(2, 50, 8);
+	   ledcSetup(3, 5000, 8);
+	   ledcSetup(4, 5000, 8);
+	   ledcSetup(5, 5000, 8);
+	   ledcSetup(6, 5000, 8);
 
-   ledcAttachPin( wfi_ledr , wfi_ledr_pwmc );
-   ledcAttachPin( wfi_ledg , wfi_ledg_pwmc );
-   ledcAttachPin( wfi_ledb , wfi_ledb_pwmc );
-   ledcAttachPin( wfi_ledk , wfi_ledk_pwmc );
+	   ledcAttachPin( act_ledr , act_ledr_pwmc );
+	   ledcAttachPin( act_ledg , act_ledg_pwmc );
+	   ledcAttachPin( act_ledb , act_ledb_pwmc );
+	   ledcAttachPin( act_ledk , act_ledk_pwmc );
+
+	   ledcAttachPin( wfi_ledr , wfi_ledr_pwmc );
+	   ledcAttachPin( wfi_ledg , wfi_ledg_pwmc );
+	   ledcAttachPin( wfi_ledb , wfi_ledb_pwmc );
+	   ledcAttachPin( wfi_ledk , wfi_ledk_pwmc );
 }
 
 /* +-------------------------------------+
