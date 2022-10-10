@@ -210,7 +210,9 @@ void setup() {
 	    Serial.println("Error initializing ESP-NOW");
 	    return;
 	  }
+
 	// setup pins
+
 	   pinMode( setup_btn, INPUT );
 	   pinMode( act_ledr , OUTPUT );
 	   pinMode( act_ledg , OUTPUT );
@@ -224,13 +226,15 @@ void setup() {
 
 	// configure PWM for LEDs
 	
-	   ledcSetup(0, 50, 8);
-	   ledcSetup(1, 50, 8);
-	   ledcSetup(2, 50, 8);
-	   ledcSetup(3, 5000, 8);
-	   ledcSetup(4, 5000, 8);
-	   ledcSetup(5, 5000, 8);
-	   ledcSetup(6, 5000, 8);
+	   ledcSetup(act_ledr_pwmc, 5000, 8);  // Frequency 50 was not accepted for some reason.
+	   ledcSetup(act_ledg_pwmc, 5000, 8);
+	   ledcSetup(act_ledb_pwmc, 5000, 8);
+	   ledcSetup(act_ledk_pwmc, 5000, 8);
+
+	   ledcSetup(wfi_ledr_pwmc, 5000, 8);
+	   ledcSetup(wfi_ledg_pwmc, 5000, 8);
+	   ledcSetup(wfi_ledb_pwmc, 5000, 8);
+      ledcSetup(wfi_ledk_pwmc, 5000, 8);
 
 	   ledcAttachPin( act_ledr , act_ledr_pwmc );
 	   ledcAttachPin( act_ledg , act_ledg_pwmc );
@@ -267,8 +271,7 @@ void act_led(int color, int s) {
    int r = color / 0x10000;  // find red value (most significant 8 bits)
    int g = ( color - (r*0x10000) ) / 0x100;   // find green vlaue (most significant 8 bits after taking away the r)
    int b = ( color - (r*0x10000) - (g*0x100) );     // find blue value (least significant 8 bits)
-   digitalWrite(act_ledk,LOW);   // turn off led before changing color
-
+   
    //setup act LED pins
    ledcWrite(act_ledr_pwmc,r);
    ledcWrite(act_ledg_pwmc,g);
@@ -283,8 +286,7 @@ void wfi_led(int color, int s) {
    int r = color / 0x10000;  // find red value (most significant 8 bits)
    int g = ( color - (r*0x10000) ) / 0x100;   // find green vlaue (most significant 8 bits after taking away the r)
    int b = ( color - (r*0x10000) - (g*0x100) );     // find blue value (least significant 8 bits)
-   digitalWrite(act_ledk,LOW);   // turn off led before changing color
-
+   
    //setup act LED pins
    ledcWrite(wfi_ledr_pwmc,r);
    ledcWrite(wfi_ledg_pwmc,g);
