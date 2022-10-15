@@ -38,3 +38,6 @@ Accept-Encoding: gzip, deflate
 Accept-Language: en-US,en;q=0.9
 
 Email=ahmeed%40email.com&Password=passsword+here&dvc_group=home&SSID=ssidhere&wpassword=ssidpassword&DVC1=ac1&MAC1=00%3A12%3A34%3A56%3A78%3A90&DVC2=Device+1&MAC2=&DVC3=Device+3&MAC3=&DVC4=Device+4&MAC4=&DVC5=Device+5&MAC5=&DVC6=Device+6&MAC6=&DVC7=Device+7&MAC7=&DVC8=Device+8&MAC8=&submit=Submit
+
+
+*) HTML file is stored separately. It is called setuppage.h. When running on Arduino IDE, the setup file needs to be included in a separate tab. We do this by clicking on the top right chevron and then we get a comment to add file name. We have to name it setuppage.h, then the software will call for the raw file as an include.
