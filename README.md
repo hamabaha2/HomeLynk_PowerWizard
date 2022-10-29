@@ -44,3 +44,4 @@ Email=ahmeed%40email.com&Password=passsword+here&dvc_group=home&SSID=ssidhere&wp
 <li>HTML file is stored separately. It is called setuppage.h. When running on Arduino IDE, the setup file needs to be included in a separate tab. We do this by clicking on the top right chevron and then we get a comment to add file name. We have to name it setuppage.h, then the software will call for the raw file as an include.</li>
 <li>If the HTTP header is a POST, then continue until you see submit=Submit instead of double empty lines.</li>
 <li>Algorithm for taking in parameters: 1) Search for &Password, and carve out from position 7 (skipping Email=) and until that &Password. 2) Search for &dvc_group= and take section from &Password= position to this position, ... etc.</li>
+<li>An alternative method is to use AsyncTCP and ESP Web Server to read parameters directly.
