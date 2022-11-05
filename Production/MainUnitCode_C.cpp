@@ -58,12 +58,40 @@ unsigned int setup_btn_timer; 	// How many millis the button is pressed
 
 
 // Wifi variables
-const char ssid[] = "ssid";
-const char password[] = "wifi_password";
+char Ssid[] = "";
+char Wpassword[] = "";
 
 // ESP_NOW variable
 uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
+// Setup variables in web form to be saved in preferences
+string Email="";     //named email in the web form
+string Password="";  //named password in the web form
+String Dvc_group=""; //named dvc_group in the web form
+
+String Dvc1="";      //named dvc1 in the web form
+String Mac1="";      //named MAC1 in the web form
+
+String Dvc2="";      //named dvc1 in the web form
+String Mac2="";      //named MAC1 in the web form
+
+String Dvc3="";      //named dvc1 in the web form
+String Mac3="";      //named MAC1 in the web form
+
+String Dvc4="";      //named dvc1 in the web form
+String Mac4="";      //named MAC1 in the web form
+
+String Dvc5="";      //named dvc1 in the web form
+String Mac5="";      //named MAC1 in the web form
+
+String Dvc6="";      //named dvc1 in the web form
+String Mac6="";      //named MAC1 in the web form
+
+String Dvc7="";      //named dvc1 in the web form
+String Mac7="";      //named MAC1 in the web form
+
+String Dvc8="";      //named dvc1 in the web form
+String Mac8="";      //named MAC1 in the web form
 
 /* +-------------------------------------+
    |         Global Structures           |
@@ -231,17 +259,17 @@ void setup_mode() {
      // Send a GET request to <ESP_IP>/get?input1=<inputMessage>
    server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
       // GET email value on <ESP_IP>/get?email=email
-         email = request->getParam("Email")->value();
+         Email = request->getParam("Email")->value();
                   
-      Serial.println(email);
+      Serial.println(Email);
       
       request->send(200, "text/html", "HTTP GET request sent to your ESP on input field (Email) with value: " 
-                           + email + "<br><a href=\"/\">Return to Home Page</a>");
+                           + Email + "<br><a href=\"/\">Return to Home Page</a>");
    });
    server.onNotFound(notFound);
    server.begin();
 
-   // ****** WiFi settings ***********
+   // ****** WiFi settings *********** 
 
    // Start Wifi
    Serial.println("Starting WiFi ...");
@@ -332,6 +360,10 @@ void setup() {
 	   ledcAttachPin( wfi_ledg , wfi_ledg_pwmc );
 	   ledcAttachPin( wfi_ledb , wfi_ledb_pwmc );
 	   ledcAttachPin( wfi_ledk , wfi_ledk_pwmc );
+
+   // Pull initial configuration from Flash memory in Preferences.h
+
+   
 }
 
 /* +-------------------------------------+
