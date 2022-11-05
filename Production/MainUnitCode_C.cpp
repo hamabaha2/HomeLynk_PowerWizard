@@ -2,9 +2,12 @@
 /* +-------------------------------------+
    |               Libraries             |
    +-------------------------------------+ */
+ #include <Arduino.h>
  #include <WiFi.h>
  #include <Preferences.h>
  #include <esp_now.h>
+ #include <AsyncTCP.h>
+ #include <ESPAsyncWebServer.h>
 
 /* +-------------------------------------+
    |        Structure Templates          |
@@ -90,9 +93,125 @@ void setup_mode() {
    // define local variables
    unsigned long int setup_timer; 
    unsigned long int currentTime; 
-   unsigned long int previousTime; 
-   bool submitted = 0; 
+   unsigned long int previousTime;
+   bool submitted = 0;
+   String email;
+   String password;
+   String deviceGrpName;
+   String SSID;
+   String WifiPwd;
 
+   const char index_html[] = R"rawliteral(
+                  <!DOCTYPE html>
+            <html lang="en" dir="ltr">
+            <head>
+               <meta charset="utf-8">
+               <title>HomeLynk Setup</title>
+               <style media="screen">
+                  body {
+                  margin: 2% 10% 2% 10%;
+                  background-color: #2C3333;
+                  font-family: verdana;
+                  color: #E7F6F2;
+                  }
+                  h1 {
+                  color: #A5C9CA;
+                  text-align: center;
+                  padding: 2%;
+                  background-color: #395B64;
+                  }
+                  .btn {
+                  margin-left: 40%;
+                  margin-top: 15px;
+                  padding: 20px 80px 20px 80px;
+                  border: none;
+                  font-size: 150%;
+                  color: #2C3333;
+                  background-color: #A5C9CA;
+                  }
+                  .btn:hover {
+                  color: #F5F9FA;
+                  background-color: #B5D9DA;
+                  }
+                  .sec {
+                  background-color: #395B64;
+                  padding-top: 10px;
+                  padding-bottom: 5px;
+                  }
+               </style>
+            </head>
+            <body>
+               <h1>HomeLynk setup</h1>
+               <hr>
+               <p>
+                  Welcome to setup mode on your HomeLynk device.
+                  Please follow the instructions and fill the form in order to complete the setup of your device. Finish by pressing the submit button and you should be all set.
+               </p>
+               <hr>
+               <form action="/get">
+                  <h2>Account Information</h2>
+                  <p>Please fill in your account information here</p>
+                  <div class="sec">
+                  <label for="Email">Account Email Address </label><input type="text" name="Email" value="email@example.com"><br>
+                  <label for="Password">Account Password </label><input type="password" name="Password" value=""><br>
+                  <label for="dvc_group">Device Group name </label> <input type="text" name="dvc_group" value=""><br>
+                  </div>
+                  <hr>
+                  <h2>WiFi Settings</h2>
+                  <p>Please enter home WiFi SSID and Password</p>
+                  <div class="sec">
+                  Wireless Netwrok Name "SSID" <input type="text" name="SSID" value=""><br>
+                  Wireless Password <input type="password" name="wpassword" value=""><br>
+                  </div>
+                  <hr>
+                  <h2>Smart things</h2>
+                  <p>Below is a list of smart devices connected</p>
+                  <div class="sec">
+                  <label for="DVC1">Device 1 Name: </label> <input type="text" name="DVC1" value="Device 1">
+                  <label for="MAC1">Device 1 MAC Address: </label> <input type="text" name="MAC1" value=""><br>
+                  <label for="DVC1">Device 2 Name: </label> <input type="text" name="DVC2" value="Device 1">
+                  <label for="MAC2">Device 2 MAC Address: </label> <input type="text" name="MAC2" value=""><br>
+                  <label for="DVC1">Device 3 Name: </label> <input type="text" name="DVC3" value="Device 3">
+                  <label for="MAC3">Device 3 MAC Address: </label> <input type="text" name="MAC3" value=""><br>
+                  <label for="DVC1">Device 4 Name: </label> <input type="text" name="DVC4" value="Device 4">
+                  <label for="MAC4">Device 4 MAC Address: </label> <input type="text" name="MAC4" value=""><br>
+                  <label for="DVC1">Device 5 Name: </label> <input type="text" name="DVC5" value="Device 5">
+                  <label for="MAC5">Device 5 MAC Address: </label> <input type="text" name="MAC5" value=""><br>
+                  <label for="DVC1">Device 6 Name: </label> <input type="text" name="DVC6" value="Device 6">
+                  <label for="MAC6">Device 6 MAC Address: </label> <input type="text" name="MAC6" value=""><br>
+                  <label for="DVC1">Device 7 Name: </label> <input type="text" name="DVC7" value="Device 7">
+                  <label for="MAC7">Device 7 MAC Address: </label> <input type="text" name="MAC7" value=""><br>
+                  <label for="DVC1">Device 8 Name: </label> <input type="text" name="DVC8" value="Device 8">
+                  <label for="MAC8">Device 8 MAC Address: </label> <input type="text" name="MAC8" value=""><br>
+                  </div>
+                  <input class="btn" type="submit" name="submit" value="Submit">
+               </form>
+               <hr>
+               <h2>
+                  Device Information
+               </h2>
+               <div class="sec">
+                  <p>Temperature: 50</p>
+                  <p>Time: 13:04:00</p>
+                  <p>Date: 13:04:00</p>
+                  <p>Time since last reboot: 123042 seconds</p>
+               </div>
+            </body>
+            </html>
+      )rawliteral";
+   
+   // end of raw HTML page here
+
+   // ****** webserver settings ********
+   AsyncWebServer server(80);
+   // Local function declaration
+   /* I am not sure why this is not working, saying that a function-definition is not allowed here before the "{" token 
+   void notFound(AsyncWebServerRequest *request) {
+      request->send(404, "text/plain", "Not found");
+   }
+   */
+
+   // Checking setup button before actually starting
    while (digitalRead(setup_btn)==HIGH) {
       // feedback on setup led while button is pressed
       Serial.println("Waiting for button release to start setup mode");
@@ -104,18 +223,29 @@ void setup_mode() {
    setup_btn_timer = millis();	// reset the button timer (not sure if this works)
    // return 0;
 
-   // ****** webserver settings ********
 
-   // Start server
-   WiFiServer server(80);
-   // header information variable
-   String header;
+   // Here we will setup interrupts for web page
+   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+      request->send_P(200, "text/html", index_html);
+   });
+     // Send a GET request to <ESP_IP>/get?input1=<inputMessage>
+   server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
+      // GET email value on <ESP_IP>/get?email=email
+         email = request->getParam("Email")->value();
+                  
+      Serial.println(email);
+      
+      request->send(200, "text/html", "HTTP GET request sent to your ESP on input field (Email) with value: " 
+                           + email + "<br><a href=\"/\">Return to Home Page</a>");
+   });
+   server.onNotFound(notFound);
+   server.begin();
 
    // ****** WiFi settings ***********
 
    // Start Wifi
    Serial.println("Starting WiFi ...");
-   WiFi.softAP("HLSetup", "1235678");
+   WiFi.softAP("HLSetup", "hlsetup1");
 
    IPAddress IP = WiFi.softAPIP();
    Serial.print("AP IP address: ");
@@ -125,64 +255,21 @@ void setup_mode() {
    setup_timer = millis(); // timer to expire setup mode if left for too long
   
    while (digitalRead(setup_btn)==LOW) {  // exit setup mode when setup is pressed again
-   
-   WiFiClient client = server.available(); // listen to incoming clients
-
-   // ************** client connection management and HTML page ************************
-   
-   if (client) {
-      currentTime = millis();
-      previousTime = currentTime;
-      Serial.println("Client connected");
-      String currentLine = "";
-      while (client.connected() && currentTime - previousTime <= 2000) { // Loop while client is connected
-         currentTime = millis();
-         if (client.available()) {
-            setup_timer = millis();    // restart setup timer 
-            char c = client.read();    // read a byte from the client
-            Serial.write(c);
-            header += c;
-            if (c == '\n') { //HTTP ends with two blanks, check if blank
-               if (currentLine.length() == 0) {
-                  client.println("HTTP/1.1 200 OK");
-                  client.println("Content-type:text/html");
-                  client.println("Connection: close");
-                  client.println();
-
-                  // ******** receiving the bytes starts here *************
-                  // in previous tests, we checked if 'header' variable included GET /26/on in the request
-                  // maybe we check with line instead here.
-                  // the command they used was if (header.indexOf("GET /26/on") >= 0 ) 
-                                    
-                  //****************** display webpage here ***************
-
-               }
-            }
-         }
-         // clear header variable
-         header = "";
-         // close connection
-         client.stop();
-         Serial.println("Client disconnected");
-         Serial.println("");
-
+         
          // setup timer expiry
          if ((( millis() - setup_timer ) > 300000 ) || ( digitalRead(setup_btn) == HIGH )) {
             // close wifi
             // close server
             // get out of setup mode (Maybe we should call setup function?)
-            break;
+            break;   
          }
-      }
    }
+}
 	// Peering mode configuration here
 	// exit setup mode using button or time expiry
 	// the main unit ESPNOW's on standard SSID, will listen to returning MAC addresses
 	// Newly learned MAC addresses will be added to list
 	// lights indicate peering success and failure (If 8 is already there)
-
-   }
-   }
 
 //Factory Reset Function
 void factory_reset() {
