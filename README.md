@@ -45,7 +45,7 @@ Email=ahmeed%40email.com&Password=passsword+here&dvc_group=home&SSID=ssidhere&wp
 <li>If the HTTP header is a POST, then continue until you see submit=Submit instead of double empty lines.</li>
 <li>Algorithm for taking in parameters: 1) Search for &Password, and carve out from position 7 (skipping Email=) and until that &Password. 2) Search for &dvc_group= and take section from &Password= position to this position, ... etc.</li>
 <li>An alternative method is to use AsyncTCP and ESP Web Server to read parameters directly.
-<\ul>
-<h2> Next Step
+</ul>
+<h2> Next Steps </h2> 
 <ul>
 <li> The index_html raw literal needs to be broken into one with some variables embdedded in the values of the form. When I tried this the first time, I realized that I cannot add more than one raw literal value into the mix, instead, I have to create probably multiple variables with raw literal, then add them together in index_html variable.
