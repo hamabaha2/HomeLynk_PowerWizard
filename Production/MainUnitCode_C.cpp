@@ -123,12 +123,7 @@ void setup_mode() {
    unsigned long int currentTime; 
    unsigned long int previousTime;
    bool submitted = 0;
-   String email;
-   String password;
-   String deviceGrpName;
-   String SSID;
-   String WifiPwd;
-
+   
    const char index_html[] = R"rawliteral(
                   <!DOCTYPE html>
             <html lang="en" dir="ltr">
@@ -230,6 +225,17 @@ void setup_mode() {
    
    // end of raw HTML page here
 
+   // ****** WiFi settings *********** 
+
+   // Start Wifi
+   Serial.println("Starting WiFi ...");
+   WiFi.softAP("HLSetup", "hlsetup1");
+
+   IPAddress IP = WiFi.softAPIP();
+   Serial.print("AP IP address: ");
+   Serial.println(IP);
+   server.begin();
+
    // ****** webserver settings ********
    AsyncWebServer server(80);
    // Local function declaration
@@ -244,7 +250,7 @@ void setup_mode() {
       // feedback on setup led while button is pressed
       Serial.println("Waiting for button release to start setup mode");
    }
-   while (digitalRead(setup_btn)==LOW) {
+   if (digitalRead(setup_btn)==LOW) {
       // start the setup process when button released
       Serial.println("Entering setup mode");
    }
@@ -260,25 +266,65 @@ void setup_mode() {
    server.on("/get", HTTP_GET, [] (AsyncWebServerRequest *request) {
       // GET email value on <ESP_IP>/get?email=email
          Email = request->getParam("Email")->value();
-                  
-      Serial.println(Email);
-      
-      request->send(200, "text/html", "HTTP GET request sent to your ESP on input field (Email) with value: " 
-                           + Email + "<br><a href=\"/\">Return to Home Page</a>");
+         Password = request->getParam("Password")->value();
+         Dvc_group =request->getParam("dvc_group")->value();
+         Ssid = request->getParam("SSID")->value();
+         Wpassword = request->getParam("wpassword")->value();
+         Dvc1 = request->getParam("DVC1")->value();
+         Mac1 = request->getParam("MAC1")->value();
+         Dvc2 = request->getParam("DVC2")->value();
+         Mac2 = request->getParam("MAC2")->value();
+         Dvc3 = request->getParam("DVC3")->value();
+         Mac3 = request->getParam("MAC3")->value();
+         Dvc4 = request->getParam("DVC4")->value();
+         Mac4 = request->getParam("MAC4")->value();
+         Dvc5 = request->getParam("DVC5")->value();
+         Mac5 = request->getParam("MAC5")->value();
+         Dvc6 = request->getParam("DVC6")->value();
+         Mac6 = request->getParam("MAC6")->value();
+         Dvc7 = request->getParam("DVC7")->value();
+         Mac7 = request->getParam("MAC7")->value();
+         Dvc8 = request->getParam("DVC8")->value();
+         Mac8 = request->getParam("MAC8")->value();   
+
+         // Show your entered variables
+         Serial.println("Account email and password [ Email : Password ]");
+         Serial.println(Email);
+         Serial.print(" : ")
+         Serial.print(Password);
+         Serial.print("Device Group Name : ")
+         Serial.println(Dvc_group);
+         Serial.println("Wireless SSID and Wireless Password")
+         Serial.println(Ssid);
+         Serial.print(" : ")
+         Serial.println(Wpassword);
+         Serial.println("Registered Remote Switches")
+         Serial.println(Dvc1);
+         Serial.print(Mac1);
+         Serial.println(Dvc2);
+         Serial.print(Mac2);
+         Serial.println(Dvc3);
+         Serial.print(Mac3);
+         Serial.println(Dvc4);
+         Serial.print(Mac4);
+         Serial.println(Dvc5);
+         Serial.print(Mac5);
+         Serial.println(Dvc6);
+         Serial.print(Mac6);
+         Serial.println(Dvc7);
+         Serial.print(Mac7);
+         Serial.println(Dvc8);
+         Serial.print(Mac8);
+
+         request->send(200, "text/html", "HTTP GET request sent to your ESP on input field (Email) with value: " 
+                              + Email + "<br><a href=\"/\">Return to Home Page</a>");
+         submitted = 1; // declare that a save is required
+         // we can also save the settings here instead
    });
    server.onNotFound(notFound);
    server.begin();
 
-   // ****** WiFi settings *********** 
 
-   // Start Wifi
-   Serial.println("Starting WiFi ...");
-   WiFi.softAP("HLSetup", "hlsetup1");
-
-   IPAddress IP = WiFi.softAPIP();
-   Serial.print("AP IP address: ");
-   Serial.println(IP);
-   server.begin();
 
    setup_timer = millis(); // timer to expire setup mode if left for too long
   
@@ -286,8 +332,27 @@ void setup_mode() {
          
          // setup timer expiry
          if ((( millis() - setup_timer ) > 300000 ) || ( digitalRead(setup_btn) == HIGH )) {
-            // close wifi
-            // close server
+            // Extract variables
+            if (submitted==1) {
+               //save the parameters into flash memory
+            }
+            
+            // led actions here
+
+            // Close server
+            server.end();
+
+            // Change wifi back to client
+            WiFi.mode(WIFI_STA);
+            while (WiFi.status() != WL_CONNECTED) {
+               delay(500);
+               Serial.print(".");
+            }
+            Serial.print("");
+            Serial.println("WiFi connected.");
+            Serial.println("IP address: ");
+            Serial.println(WiFi.localIP());
+
             // get out of setup mode (Maybe we should call setup function?)
             break;   
          }
@@ -318,6 +383,7 @@ void setup() {
   	// Set device as a Wi-Fi Station
 	
   	  WiFi.mode(WIFI_STA);
+     WiFi.begin(Ssid,Wpassword);
 	
 	// Initialize ESP NOW
 	
@@ -363,7 +429,7 @@ void setup() {
 
    // Pull initial configuration from Flash memory in Preferences.h
 
-   
+
 }
 
 /* +-------------------------------------+
