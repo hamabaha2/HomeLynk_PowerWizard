@@ -65,8 +65,8 @@ char Wpassword[] = "";
 uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
 // Setup variables in web form to be saved in preferences
-string Email="";     //named email in the web form
-string Password="";  //named password in the web form
+String Email="";     //named email in the web form
+String Password="";  //named password in the web form
 String Dvc_group=""; //named dvc_group in the web form
 
 String Dvc1="";      //named dvc1 in the web form
@@ -111,6 +111,11 @@ switchMsg switch6;
 switchMsg switch7;
 switchMsg switch8;
 
+/* +-------------------------------------+
+   |          Create Web Server          |
+   +-------------------------------------+ */
+
+AsyncWebServer server(80);
 
 /* +-------------------------------------+
    |       Function Declarations         |
